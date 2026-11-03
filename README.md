@@ -4,6 +4,8 @@ Permissionless experiments with SQUEEK — Sepolia vault UI for deposits, merges
 
 **Live:** [https://sqkstr.xyz](https://sqkstr.xyz)
 
+squeekchain-project: ee83d7e9-6261-4605-835e-91a01f6af89e
+
 ## Stack
 
 - Next.js 15 App Router + TypeScript + Tailwind
