@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "OffBit Trial";
+  src: url("/fonts/OffBitTrial-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OffBit Trial";
+  src: url("/fonts/OffBitTrial-Bold-1.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SaH1 Outline";
+  src: url("/fonts/SaH1Outline.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --mint: #ecffd9;
+  --ink: #0a0a0a;
+  /*
+   * Inset neumorphism needs matching ground + box color (like the reference).
+   * Keep it light so it stays close to the white brand.
+   */
+  --surface: #ececec;
+  --neu-box: #ececec;
+  --background: var(--surface);
+  --foreground: #0a0a0a;
+  --orange: #da982a;
+  --blue: #6257f8;
+  --ink-muted: color-mix(in srgb, var(--ink) 45%, transparent);
+  --ink-faint: color-mix(in srgb, var(--ink) 12%, transparent);
+  --ink-line: color-mix(in srgb, var(--ink) 22%, transparent);
+  --neu-dark: rgba(163, 177, 198, 0.55);
+  --neu-light: #ffffff;
+  /* Raised / outset / extruded — dark BR, light TL (matches reference) */
+  --neu-raised:
+    10px 10px 24px var(--neu-dark),
+    -10px -10px 24px var(--neu-light);
+  --neu-raised-sm:
+    6px 6px 14px var(--neu-dark),
+    -6px -6px 14px var(--neu-light);
+  /* Pressed / inset (active only) */
+  --neu-inset:
+    inset 8px 8px 18px rgba(163, 177, 198, 0.7),
+    inset -8px -8px 18px #ffffff;
+  --neu-inset-sm:
+    inset 5px 5px 12px rgba(163, 177, 198, 0.65),
+    inset -5px -5px 12px #ffffff;
+  --neu-flat-ink:
+    8px 8px 16px rgba(10, 10, 10, 0.3),
+    -4px -4px 10px rgba(255, 255, 255, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+@theme inline {
+  --color-mint: var(--mint);
+  --color-ink: var(--ink);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-orange: var(--orange);
+  --color-blue: var(--blue);
+  --font-offbit: "OffBit Trial", ui-monospace, monospace;
+  --font-sah1: "SaH1 Outline", ui-sans-serif, sans-serif;
+}
+
+.font-offbit {
+  font-family: var(--font-offbit);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.font-sah1 {
+  font-family: var(--font-sah1);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+
+/* Default cursor: Normal.cur · hover on interactive: Link.cur (hotspot 5,0) */
+html,
+body,
+* {
+  cursor: url("/cursors/Normal.cur") 0 0, auto;
+}
+
+a,
+button,
+input,
+textarea,
+select,
+[role="button"],
+summary,
+label[for],
+.cursor-pointer {
+  cursor: url("/cursors/Normal.cur") 0 0, pointer;
+}
+
+a:hover,
+button:hover,
+[role="button"]:hover,
+summary:hover,
+label[for]:hover,
+.cursor-pointer:hover {
+  cursor: url("/cursors/Link.cur") 5 0, pointer;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#mechanism,
+#portfolio,
+#level-up {
+  scroll-margin-top: 6.5rem;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-offbit), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Soft UI — same --neu-box as page so inset/raised shadows read */
+.neu-raised {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 20px;
+  box-shadow: var(--neu-raised);
+}
+
+.neu-raised-sm {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 16px;
+  box-shadow: var(--neu-raised-sm);
+}
+
+.neu-inset {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 20px;
+  box-shadow: var(--neu-inset);
+}
+
+.neu-btn {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 14px;
+  box-shadow: var(--neu-raised-sm);
+  transition:
+    box-shadow 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.neu-btn:hover:not(:disabled) {
+  box-shadow: var(--neu-raised);
+}
+
+.neu-btn:active:not(:disabled) {
+  box-shadow: var(--neu-inset-sm);
+}
+
+.neu-btn-ink {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  box-shadow: var(--neu-flat-ink);
+  transition:
+    box-shadow 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.neu-btn-ink:hover:not(:disabled) {
+  background: var(--neu-box);
+  color: var(--ink);
+  box-shadow: var(--neu-raised-sm);
+}
+
+.neu-btn-ink:active:not(:disabled) {
+  box-shadow: var(--neu-inset-sm);
+}
+
+/* Tip cards: soft raised on the shared ground */
+.neu-card {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 18px;
+  box-shadow: var(--neu-raised-sm);
+  transition: box-shadow 0.16s ease;
+}
+
+.neu-card:hover {
+  box-shadow: var(--neu-raised);
+}
+
+/* Stats / vault panels: raised / extruded (outset) soft UI */
+.neu-panel {
+  background: var(--neu-box);
+  border: none;
+  border-radius: 22px;
+  box-shadow: var(--neu-raised);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-media {
+  animation: hero-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-ticker-track {
+  animation: hero-ticker 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-media {
+    animation: none !important;
+  }
+
+  .hero-ticker-track {
+    animation: none;
+  }
+}
