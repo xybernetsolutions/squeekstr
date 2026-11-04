@@ -13,6 +13,47 @@ function formatSqk(amount: string): string {
   return n.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
+/** Manual protocol SQK earned per day (ops ledger). */
+const PROTOCOL_SQK_BY_DAY = [
+  { day: 1, sqk: 7351 },
+  { day: 2, sqk: 6642 },
+] as const;
+
+function ProtocolDailyChart() {
+  const max = Math.max(...PROTOCOL_SQK_BY_DAY.map((d) => d.sqk), 1);
+
+  return (
+    <div>
+      <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
+        Protocol SQK earned / day
+      </p>
+      <div className="mt-6 flex h-56 items-end gap-6 sm:h-72 sm:gap-8">
+        {PROTOCOL_SQK_BY_DAY.map((d) => {
+          const pct = (d.sqk / max) * 100;
+          return (
+            <div
+              key={d.day}
+              className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-3"
+            >
+              <p className="font-offbit text-sm text-[var(--ink)] sm:text-base">
+                {d.sqk.toLocaleString()}
+              </p>
+              <div
+                className="w-full max-w-[5.5rem] rounded-[14px] bg-[var(--orange)] shadow-[var(--neu-raised-sm)]"
+                style={{ height: `${pct}%`, minHeight: "12%" }}
+                title={`Day ${d.day}: ${d.sqk.toLocaleString()} SQK`}
+              />
+              <p className="font-offbit text-[11px] uppercase tracking-[0.14em] text-[var(--ink)]/45 sm:text-xs">
+                Day {d.day}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function OpsDesk() {
   const publicClient = usePublicClient();
 
@@ -80,56 +121,62 @@ export function OpsDesk() {
     <div
       className={`flex min-h-[100dvh] items-center justify-center bg-[var(--surface)] py-16 text-[var(--ink)] ${pageGutterClass}`}
     >
-      <div className="neu-panel w-full max-w-3xl px-8 py-10 sm:px-12 sm:py-14">
-        <div className="mb-10 flex items-center justify-between gap-3 sm:mb-12">
-          <p className="font-offbit text-xs uppercase tracking-[0.2em] text-[var(--ink)]/45 sm:text-sm">
-            Vault desk
-          </p>
-          <button
-            type="button"
-            onClick={() => void statsQ.refetch()}
-            className="font-offbit text-xs uppercase tracking-wider text-[var(--ink)] underline-offset-2 hover:underline sm:text-sm"
-          >
-            {statsQ.isFetching ? "…" : "Refresh"}
-          </button>
+      <div className="flex w-full max-w-5xl flex-col gap-8">
+        <div className="neu-panel w-full px-8 py-10 sm:px-12 sm:py-14">
+          <div className="mb-10 flex items-center justify-between gap-3 sm:mb-12">
+            <p className="font-offbit text-xs uppercase tracking-[0.2em] text-[var(--ink)]/45 sm:text-sm">
+              Vault desk
+            </p>
+            <button
+              type="button"
+              onClick={() => void statsQ.refetch()}
+              className="font-offbit text-xs uppercase tracking-wider text-[var(--ink)] underline-offset-2 hover:underline sm:text-sm"
+            >
+              {statsQ.isFetching ? "…" : "Refresh"}
+            </button>
+          </div>
+
+          {statsQ.isLoading ? (
+            <p className="text-base text-[var(--ink)]/50">Loading…</p>
+          ) : statsQ.error ? (
+            <p className="text-base text-red-700">
+              {(statsQ.error as Error).message}
+            </p>
+          ) : (
+            <div className="space-y-10 sm:space-y-12">
+              <div>
+                <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
+                  Total SQK claimed
+                </p>
+                <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
+                  {formatSqk(statsQ.data?.vaultClaimedSqk ?? "0")}
+                </p>
+              </div>
+
+              <div className="border-t border-[var(--ink)]/10 pt-10 sm:pt-12">
+                <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
+                  Trackers earning
+                </p>
+                <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
+                  {statsQ.data?.trackersEarning ?? "—"}
+                </p>
+              </div>
+
+              <div className="border-t border-[var(--ink)]/10 pt-10 sm:pt-12">
+                <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
+                  Total mining power
+                </p>
+                <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
+                  {statsQ.data?.totalMiningPower ?? "—"}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
-        {statsQ.isLoading ? (
-          <p className="text-base text-[var(--ink)]/50">Loading…</p>
-        ) : statsQ.error ? (
-          <p className="text-base text-red-700">
-            {(statsQ.error as Error).message}
-          </p>
-        ) : (
-          <div className="space-y-10 sm:space-y-12">
-            <div>
-              <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
-                Total SQK claimed
-              </p>
-              <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
-                {formatSqk(statsQ.data?.vaultClaimedSqk ?? "0")}
-              </p>
-            </div>
-
-            <div className="border-t border-[var(--ink)]/10 pt-10 sm:pt-12">
-              <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
-                Trackers earning
-              </p>
-              <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
-                {statsQ.data?.trackersEarning ?? "—"}
-              </p>
-            </div>
-
-            <div className="border-t border-[var(--ink)]/10 pt-10 sm:pt-12">
-              <p className="font-offbit text-xs uppercase tracking-[0.18em] text-[var(--ink)]/45 sm:text-sm">
-                Total mining power
-              </p>
-              <p className="mt-3 font-offbit text-5xl text-[var(--ink)] sm:text-6xl">
-                {statsQ.data?.totalMiningPower ?? "—"}
-              </p>
-            </div>
-          </div>
-        )}
+        <div className="neu-panel w-full px-8 py-10 sm:px-12 sm:py-14">
+          <ProtocolDailyChart />
+        </div>
       </div>
     </div>
   );
